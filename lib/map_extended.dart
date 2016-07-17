@@ -5,8 +5,10 @@ export 'dart:collection';
 
 class ExtendedMap<K, V> extends Object with MapMixin {
   Map _Map = new Map();
-  List _keys = new List();
-  List _protectedFields = new List();
+  Set _set = new Set();
+
+  Set get keys => _set;
+  Set protectedKeys = new Set();
 
   Map fromMap(Map map) {
     this.keys.forEach((String extendedKey) {
@@ -16,25 +18,29 @@ class ExtendedMap<K, V> extends Object with MapMixin {
     return this;
   }
 
+  setProtectedField(K key, V value) {
+    keys.add(key);
+    protectedKeys.remove(key);
+    _Map[key] = value;
+    protectedKeys.add(key);
+  }
+
   operator [](Object key) {
     return _Map[key];
   }
 
   operator []=(K key, V value) {
-    if (!_keys.contains(key)) return;
-    if (_protectedFields.contains(key)) return;
+    if (protectedKeys.contains(key)) {
+      throw new ArgumentError("$key can't be changed");
+    }
     _Map[key] = value;
   }
 
-  get keys => _keys;
-
   remove(key) {
-    _keys.remove(key);
     _Map.remove(key);
   }
 
   clear() {
-    _keys.clear();
     _Map.clear();
   }
 }

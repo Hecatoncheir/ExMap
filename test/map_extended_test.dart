@@ -8,7 +8,13 @@ import 'package:map_annotation/map_extended.dart';
 class TestMap extends ExtendedMap {
 
   TestMap(){
-    keys.addAll(['testField']);
+    keys.addAll(['testField', 'testKey']);
+    protectedKeys.add('id');
+  }
+
+  get id => this['id'];
+  set id(value) {
+    setProtectedField('id', value);
   }
 
   get testField => this['testField'];
@@ -25,6 +31,13 @@ main() {
   });
 
   group('The extended TestMap class', () {
+
+    test('has protected fields', () {
+      map.id = 1;
+      expect(map['id'], equals(1));
+    });
+
+
     test('has a map interface', () {
       map.keys.add('testKey');
       map['testKey'] = 'testValue';
@@ -38,9 +51,6 @@ main() {
     });
 
     test("can't set values without keys", (){
-      map['testKey'] = 'testValue';
-      expect(map['testKey'], isNull);
-
       map.keys.add('testKey');
       map['testKey'] = 'testValue';
       expect(map['testKey'], equals('testValue'));
