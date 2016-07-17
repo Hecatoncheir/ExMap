@@ -3,7 +3,7 @@ library map_extended_test;
 import 'dart:convert';
 
 import 'package:test/test.dart';
-import 'package:map_annotation/map_extended.dart';
+import 'package:ex_map/ex_map.dart';
 
 class TestMap extends ExtendedMap {
 

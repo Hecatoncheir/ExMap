@@ -1,5 +1,5 @@
-import 'package:map_annotation/map_annotation.dart';
+import 'package:ex_map/ex_map.dart';
 
 main(){
-  prepareExtendedMaps();
+  prepareExMaps();
 }

@@ -1,7 +1,7 @@
 library map_annotation_test;
 
 import 'package:test/test.dart';
-import 'package:map_annotation/map_annotation.dart';
+import 'package:ex_map/ex_map.dart';
 
 @ExMap()
 class TestMap extends ExtendedMap {
@@ -14,7 +14,7 @@ class TestMap extends ExtendedMap {
 
 void main() {
   TestMap map;
-  prepareExtendedMaps();
+  prepareExMaps();
 
   setUp(() {
     map = new TestMap();

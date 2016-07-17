@@ -1,10 +1,10 @@
-library map_annotation;
+library ex_map;
 
 @MirrorsUsed(symbols: 'ExMap')
 import 'dart:mirrors';
 
-import 'package:map_annotation/map_extended.dart';
-export 'package:map_annotation/map_extended.dart';
+import 'src/map_extended.dart';
+export 'src/map_extended.dart';
 
 class ExMap {
   const ExMap();
@@ -14,7 +14,7 @@ class MapKey {
   const MapKey({bool protected});
 }
 
-void prepareExtendedMaps() {
+void prepareExMaps() {
   MirrorSystem mirrorSystem = currentMirrorSystem();
 
 
