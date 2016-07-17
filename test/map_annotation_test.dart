@@ -3,10 +3,13 @@ library map_annotation_test;
 import 'package:test/test.dart';
 import 'package:ex_map/ex_map.dart';
 
-@ExMap()
-class TestMap extends ExtendedMap {
+@ExAMap()
+class TestMap extends ExMap {
   @MapKey()
   String testField;
+
+  @MapKey()
+  String staticField = 'staticFieldValue';
 
   @MapKey(protected: true)
   String protectedField;
@@ -25,6 +28,7 @@ void main() {
       map.keys.add('testKey');
       map['testKey'] = 'testValue';
       map.testField = 'test';
+      print(map);
 
       expect(map['testKey'], equals('testValue'));
       expect(map.keys.contains('testKey'), isTrue);

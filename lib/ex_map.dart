@@ -6,17 +6,23 @@ import 'dart:mirrors';
 import 'src/map_extended.dart';
 export 'src/map_extended.dart';
 
-class ExMap {
-  const ExMap();
+class ExAMap {
+  const ExAMap();
 }
 
 class MapKey {
   const MapKey({bool protected});
 }
 
+String symbolToString(Symbol symbol) {
+  RegExp symbolToStringPattern = new RegExp(r'"[a-zA-Z]*');
+  Match symbolMatch = symbolToStringPattern.firstMatch(symbol.toString());
+  String symbolString = symbolMatch.group(0).replaceAll('"', '');
+  return symbolString;
+}
+
 void prepareExMaps() {
   MirrorSystem mirrorSystem = currentMirrorSystem();
-
 
   /// Сперва отыскиваются аннотации подходящие по типу ExMap, затем
   /// в библиотеке где аннотации были обнаружены ищутся
@@ -30,20 +36,40 @@ void prepareExMaps() {
       decMir.metadata.forEach((InstanceMirror insMir) {
         /// Если нужный тип аннотаций совпадает, значит в этой библиотеке есть
         /// классы помеченные этой аннотацией.
-        if (insMir.reflectee is ExMap) {
+        if (insMir.reflectee is ExAMap) {
           /// Можно получить значения из самой аннотации
           /// insMir.reflectee
           /// либо в библиотеке где были найдены совпадения найти аннотируемые классы
           libMir.declarations.forEach(
               (Symbol symbolInLibraryWhereAnnotationFound,
                   DeclarationMirror methodOrClass) {
-                /// Если аннотированный символ метода или класса совпадаются с символами
-                /// метода или класса библиотеки то это та запись что нужно было найти.
-                if (annotatedSymbol == symbolInLibraryWhereAnnotationFound) {
-                  ClassMirror classMirror = methodOrClass;
-                  print(classMirror.reflectedType);
-                }
+            /// Если аннотированный символ метода или класса совпадаются с символами
+            /// метода или класса библиотеки то это та запись что нужно было найти.
+            if (annotatedSymbol == symbolInLibraryWhereAnnotationFound) {
+              ClassMirror classMirror = methodOrClass;
+
+              Set set = new Set();
+
+              /// Теперь можно находить поля помеченные аннотациями
+              classMirror.declarations.forEach((Symbol classMethodOrFieldSymbol,
+                  DeclarationMirror classMethodOrField) {
+                classMethodOrField.metadata
+                    .forEach((InstanceMirror fieldAnnotationMirror) {
+                  /// Проверив тип аннотации можно быть уверенным что поле с которым
+                  /// можно работать точно соответсвует реально помеченному.
+                  if (fieldAnnotationMirror.reflectee is MapKey) {
+                    /// Проверка типа
+                    /// if((classMethodOrField as VariableMirror).isStatic) {
+                    ///   var valueOfField = classMirror.getField(classMethodOrFieldSymbol).reflectee;
+                    /// }
+
+                    set.add(symbolToString(classMethodOrFieldSymbol));
+                  }
+                  classMirror.superclass.setField(new Symbol('set'), set);
+                });
               });
+            }
+          });
         }
       });
     });
