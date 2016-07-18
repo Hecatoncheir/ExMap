@@ -20,9 +20,23 @@ class ExtendedMap<K, V> extends Object with MapMixin {
 
   Set protectedKeys = new Set();
 
+  /// Todo: camelCaseTSnakeCase or snakeCaseToCamel
+  dynamic _checkType({String key, dynamic value, Map types}) {
+    if (types[key] == String) {
+      return value.toString();
+    }
+
+    if (types[key] == int && value != null) {
+      return int.parse(value.toString());
+    }
+
+    return value;
+  }
+
   Map fromMap(Map map) {
     this.keys.forEach((String extendedKey) {
-      _Map[extendedKey] = map[extendedKey];
+      _Map[extendedKey] =
+          _checkType(key: extendedKey, value: map[extendedKey], types: types);
     });
 
     return this;
@@ -44,19 +58,7 @@ class ExtendedMap<K, V> extends Object with MapMixin {
       throw new ArgumentError("$key can't be changed");
     }
 
-    _Map[key] = value;
-
-    /// Todo: camelCaseTSnakeCase or snakeCaseToCamel
-
-    if (types[key] == String) {
-      _Map[key] = value.toString();
-      return;
-    }
-
-    if (types[key] == int) {
-      _Map[key] = int.parse(value.toString());
-      return;
-    }
+    _Map[key] = _checkType(key: key.toString(), value: value, types: types);
   }
 
   remove(key) {

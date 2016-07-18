@@ -9,11 +9,6 @@ class TestMap extends ExtendedMap {
   TestMap({id, integerField, testField}) {
     protectedKeys.add('id');
     types = {'testField': String, 'integerField': int};
-
-    this
-      ..id = id
-      ..integerField = integerField
-      ..testField = testField;
   }
 
   get id => this['id'];
