@@ -1,3 +1,4 @@
+@Skip()
 library map_annotation_test;
 
 import 'package:test/test.dart';
@@ -28,7 +29,6 @@ void main() {
       map.keys.add('testKey');
       map['testKey'] = 'testValue';
       map.testField = 'test';
-      print(map);
 
       expect(map['testKey'], equals('testValue'));
       expect(map.keys.contains('testKey'), isTrue);

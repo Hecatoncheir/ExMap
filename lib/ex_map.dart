@@ -14,13 +14,6 @@ class MapKey {
   const MapKey({bool protected});
 }
 
-String symbolToString(Symbol symbol) {
-  RegExp symbolToStringPattern = new RegExp(r'"[a-zA-Z]*');
-  Match symbolMatch = symbolToStringPattern.firstMatch(symbol.toString());
-  String symbolString = symbolMatch.group(0).replaceAll('"', '');
-  return symbolString;
-}
-
 void prepareExMaps() {
   MirrorSystem mirrorSystem = currentMirrorSystem();
 
@@ -63,7 +56,7 @@ void prepareExMaps() {
                     ///   var valueOfField = classMirror.getField(classMethodOrFieldSymbol).reflectee;
                     /// }
 
-                    set.add(symbolToString(classMethodOrFieldSymbol));
+                    set.add(MirrorSystem.getName(classMethodOrFieldSymbol));
                   }
                   classMirror.superclass.setField(new Symbol('set'), set);
                 });

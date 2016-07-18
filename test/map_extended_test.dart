@@ -6,21 +6,24 @@ import 'package:test/test.dart';
 import 'package:ex_map/ex_map.dart';
 
 class TestMap extends ExtendedMap {
-
-  TestMap(){
-    keys.addAll(['testField', 'testKey']);
+  TestMap({id, integerField, testField}) {
     protectedKeys.add('id');
+    types = {'testField': String, 'integerField': int};
+
+    this
+      ..id = id
+      ..integerField = integerField
+      ..testField = testField;
   }
 
   get id => this['id'];
-  set id(value) {
-    setProtectedField('id', value);
-  }
+  set id(value) => setProtectedField('id', value); // Can't set with []. Only like .id
+
+  get integerField => this['integerField'];
+  set integerField(value) => this['integerField'] = value;
 
   get testField => this['testField'];
-  set testField(value) {
-    this['testField'] = value;
-  }
+  set testField(value) => this['testField'] = value;
 }
 
 main() {
@@ -31,26 +34,25 @@ main() {
   });
 
   group('The extended TestMap class', () {
-
     test('has protected fields', () {
       map.id = 1;
       expect(map['id'], equals(1));
+
+      map.integerField = '1';
+      expect(map['integerField'], equals(1));
+
+      map['testField'] = 2;
+      expect(map.testField, equals('2'));
     });
 
-
     test('has a map interface', () {
-      map.keys.add('testKey');
-      map['testKey'] = 'testValue';
       map.testField = 'test';
-
-      expect(map['testKey'], equals('testValue'));
-      expect(map.keys.contains('testKey'), isTrue);
 
       expect(map.testField, equals('test'));
       expect(map['testField'], equals('test'));
     });
 
-    test("can't set values without keys", (){
+    test("can't set values without keys", () {
       map.keys.add('testKey');
       map['testKey'] = 'testValue';
       expect(map['testKey'], equals('testValue'));
@@ -63,10 +65,19 @@ main() {
       map['testKey'] = 'testValue';
 
       String jmap = JSON.encode(map);
-      expect(jmap, equals('{"testField":"test","testKey":"testValue"}'));
+      expect(
+          jmap,
+          equals(
+              '{"testField":"test","integerField":null,"testKey":"testValue"}'));
 
       Map decodedMap = JSON.decode(jmap);
-      expect(decodedMap, equals({'testField': 'test', 'testKey': 'testValue'}));
+      expect(
+          decodedMap,
+          equals({
+            'testField': 'test',
+            'integerField': null,
+            'testKey': 'testValue'
+          }));
     });
 
     test('has right keys like class fields', () {
