@@ -6,15 +6,20 @@ import 'package:ex_map/ex_map.dart';
 
 @ExAMap()
 class TestMap extends ExMap {
-  @MapKey()
-  String testField;
 
   @MapKey()
-  String staticField = 'staticFieldValue';
+  get id => this['id'];
+  set id(value) => setProtectedField('id', value);
 
   @MapKey(protected: true)
-  String protectedField;
+  get integerField => this['integerField'];
+  set integerField(value) => this['integerField'] = value;
+
+  @MapKey()
+  get testField => this['testField'];
+  set testField(value) => this['testField'] = value;
 }
+
 
 void main() {
   TestMap map;
@@ -24,17 +29,16 @@ void main() {
     map = new TestMap();
   });
 
-  group('The extended TestMap class', () {
-    test('has a map interface', () {
-      map.keys.add('testKey');
-      map['testKey'] = 'testValue';
-      map.testField = 'test';
+  group('The TestMap class', () {
+    test('has protected fields', () {
+      map.id = 1;
+      expect(map['id'], equals(1));
 
-      expect(map['testKey'], equals('testValue'));
-      expect(map.keys.contains('testKey'), isTrue);
+      map.integerField = '1';
+      expect(map['integerField'], equals(1));
 
-      expect(map.testField, equals('test'));
-      expect(map['testField'], equals('test'));
+      map['testField'] = 2;
+      expect(map.testField, equals('2'));
     });
   });
 }

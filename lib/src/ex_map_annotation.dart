@@ -2,15 +2,36 @@ part of map_extended;
 
 class ExMap<K, V> extends Object with MapMixin {
   Map _Map = new Map();
-  static Set set;
+  Set _keys = new Set();
+  Map _types = new Map();
 
-  Set get keys => set;
+  Set get keys => _keys;
+
+  Map<String, Type> get types => _types;
+  set types(Map typeMap) {
+    _types = typeMap;
+    _keys = typeMap.keys.toSet();
+  }
 
   Set protectedKeys = new Set();
 
+  /// Todo: camelCaseTSnakeCase or snakeCaseToCamel
+  dynamic _checkType({String key, dynamic value, Map types}) {
+    if (types[key] == String) {
+      return value.toString();
+    }
+
+    if (types[key] == int && value != null) {
+      return int.parse(value.toString());
+    }
+
+    return value;
+  }
+
   Map fromMap(Map map) {
     this.keys.forEach((String extendedKey) {
-      _Map[extendedKey] = map[extendedKey];
+      _Map[extendedKey] =
+          _checkType(key: extendedKey, value: map[extendedKey], types: types);
     });
 
     return this;
@@ -28,10 +49,11 @@ class ExMap<K, V> extends Object with MapMixin {
   }
 
   operator []=(K key, V value) {
-    if (protectedKeys.contains(key)) {
+    if (protectedKeys.contains(key) || !keys.contains(key)) {
       throw new ArgumentError("$key can't be changed");
     }
-    _Map[key] = value;
+
+    _Map[key] = _checkType(key: key.toString(), value: value, types: types);
   }
 
   remove(key) {
