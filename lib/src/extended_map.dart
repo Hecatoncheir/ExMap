@@ -1,6 +1,6 @@
-part of map_extended;
+part of ex_map;
 
-class ExMap<K, V> extends Object with MapMixin {
+class ExtendedMap<K, V> extends Object with MapMixin {
   Map _Map = new Map();
   Set _keys = new Set();
   Map _types = new Map();

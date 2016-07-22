@@ -1,12 +1,10 @@
-@Skip()
 library map_annotation_test;
 
 import 'package:test/test.dart';
 import 'package:ex_map/ex_map.dart';
 
-@ExAMap()
+@exMap
 class TestMap extends ExMap {
-
   @MapKey()
   get id => this['id'];
   set id(value) => setProtectedField('id', value);
@@ -19,7 +17,6 @@ class TestMap extends ExMap {
   get testField => this['testField'];
   set testField(value) => this['testField'] = value;
 }
-
 
 void main() {
   TestMap map;
