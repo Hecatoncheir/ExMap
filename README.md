@@ -25,6 +25,12 @@ class TestMap extends ExtendedMap {
 ```
 
 ```dart
+TestMap map;
+
+setUp(() {
+  map = new TestMap();
+});
+
 test('has protected fields', () {
   map.id = 1;
   expect(map['id'], equals(1));

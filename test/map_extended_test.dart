@@ -12,7 +12,8 @@ class TestMap extends ExtendedMap {
   }
 
   get id => this['id'];
-  set id(value) => setProtectedField('id', value); // Can't set with []. Only like .id
+  set id(value) =>
+      setProtectedField('id', value); // Can't set with []. Only like .id
 
   get integerField => this['integerField'];
   set integerField(value) => this['integerField'] = value;
