@@ -1,4 +1,7 @@
-part of ex_map;
+library extended_map;
+
+import 'dart:collection';
+export 'dart:collection';
 
 class ExtendedMap<K, V> extends Object with MapMixin {
   Map _Map = new Map();

@@ -1,10 +1,9 @@
 library ex_map;
 
-@MirrorsUsed(symbols: 'exMap')
-import 'dart:mirrors';
+export 'src/extended_map.dart';
 
-import 'dart:collection';
-export 'dart:collection';
+const String ExMap = 'ExMap';
 
-part 'src/extended_map.dart';
-part 'src/annotations.dart';
+class MapKey {
+  const MapKey({bool protected, Type type});
+}

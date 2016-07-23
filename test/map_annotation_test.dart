@@ -4,24 +4,20 @@ library map_annotation_test;
 import 'package:test/test.dart';
 import 'package:ex_map/ex_map.dart';
 
-@exMap
-class TestMap extends ExMap {
+@ExMap
+class TestMap extends ExtendedMap {
   @MapKey()
-  get id => this['id'];
-  set id(value) => setProtectedField('id', value);
+  int id;
 
-  @MapKey(protected: true)
-  get integerField => this['integerField'];
-  set integerField(value) => this['integerField'] = value;
+  @MapKey(protected: true, type: int)
+  int integerField;
 
   @MapKey()
-  get testField => this['testField'];
-  set testField(value) => this['testField'] = value;
+  String testField;
 }
 
 void main() {
   TestMap map;
-  prepareExMaps();
 
   setUp(() {
     map = new TestMap();
