@@ -1,3 +1,4 @@
+@Skip()
 library map_annotation_test;
 
 import 'package:test/test.dart';

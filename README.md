@@ -6,13 +6,13 @@
 class TestMap extends ExtendedMap {
   TestMap({id, integerField, testField}) {
     /// Свойство нельзя будет установить иначе кроме как через специальный метод
-    protectedKeys.add('id'); 
+    protectedKeys.add('id');
     types = {'testField': String, 'integerField': int};
   }
-  
+
   /// Свойство можно будет установить только через оператор "."
   get id => this['id'];
-  set id(value) => setProtectedField('id', value); 
+  set id(value) => setProtectedField('id', value);
 
   /// Тут можно было бы обозначить типы
   get integerField => this['integerField'];
@@ -24,12 +24,32 @@ class TestMap extends ExtendedMap {
 
 ```
 
+```dart
+test('has protected fields', () {
+  map.id = 1;
+  expect(map['id'], equals(1));
+
+  map.integerField = '1';
+  expect(map['integerField'], equals(1));
+
+  map['testField'] = 2;
+  expect(map.testField, equals('2'));
+});
+
+test('has a map interface', () {
+  map.testField = 'test';
+
+  expect(map.testField, equals('test'));
+  expect(map['testField'], equals('test'));
+});
+```
+
 ### Аннотации
-  
+
  Возможно библиотеку **dart:mirrors** уберут из sdk, но сейчас этим можно пользоваться, да и как отдельный пакет mirror, скорее всего, останутся.
-  
+
   Сократить объем работы с помощью аннотаций можно следующим образом:
-``` dart 
+``` dart
 import 'package:ex_map/ex_map.dart';
 
 @ExAMap()
