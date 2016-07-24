@@ -34,6 +34,11 @@ setUp(() {
 test('has protected fields', () {
   map.id = 1;
   expect(map['id'], equals(1));
+  try {
+    map['id'] = 2;
+  } catch (error) {
+    expect((error as ArgumentError).message, equals("id can't be changed"));
+  }
 });
 
 test('has right types', () {
