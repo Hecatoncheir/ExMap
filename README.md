@@ -34,8 +34,10 @@ setUp(() {
 test('has protected fields', () {
   map.id = 1;
   expect(map['id'], equals(1));
+});
 
-  map.integerField = '1';
+test('has right types', () {
+  map.integerField = 1;
   expect(map['integerField'], equals(1));
 
   map['testField'] = 2;
