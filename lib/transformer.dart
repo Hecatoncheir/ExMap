@@ -18,3 +18,5 @@ class TransformObjectToMap extends Transformer {
     transform.addOutput(asset);
   }
 }
+
+String parse(String source) {}

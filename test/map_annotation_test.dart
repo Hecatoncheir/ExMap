@@ -10,7 +10,7 @@ class TestMap extends ExtendedMap {
   int id;
 
   @MapKey(protected: true, type: int)
-  int integerField;
+  String integerField;
 
   @MapKey()
   String testField;
