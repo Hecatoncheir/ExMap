@@ -10,10 +10,10 @@ class TestMap extends ExtendedMap {
   int id;
 
   @MapKey(protected: true, type: int)
-  String integerField;
+  int integerField;
 
-  @MapKey()
-  String testField;
+  @MapKey(type: String)
+  var testField;
 }
 
 void main() {
@@ -27,8 +27,10 @@ void main() {
     test('has protected fields', () {
       map.id = 1;
       expect(map['id'], equals(1));
+    });
 
-      map.integerField = '1';
+    test('has right types', () {
+      map.integerField = 1;
       expect(map['integerField'], equals(1));
 
       map['testField'] = 2;

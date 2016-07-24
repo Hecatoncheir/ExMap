@@ -62,16 +62,13 @@ import 'package:ex_map/ex_map.dart';
 class TestMap extends ExMap {
 
   @MapKey()
-  get id => this['id'];
-  set id(value) => setProtectedField('id', value);
+  int id;
 
-  @MapKey(protected: true)
-  get integerField => this['integerField'];
-  set integerField(value) => this['integerField'] = value;
+  @MapKey(protected: true, type: int)
+  int integerField;
 
-  @MapKey()
-  get testField => this['testField'];
-  set testField(value) => this['testField'] = value;
+  @MapKey(type: String)
+  String testField;
 }
 
 ```

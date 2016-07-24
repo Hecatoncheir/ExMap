@@ -14,10 +14,10 @@ class TestMap extends ExtendedMap {
   int id;
 
   @MapKey(protected: true, type: int)
-  String integerField;
+  int integerField;
 
-  @MapKey()
-  String testField;
+  @MapKey(type: String)
+  var testField;
 }
 """;
 
@@ -32,10 +32,10 @@ class TestMap extends ExtendedMap {
   int id;
 
   @MapKey(protected: true, type: int)
-  String integerField;
+  int integerField;
 
-  @MapKey()
-  String testField;
+  @MapKey(type: String)
+  var testField;
 }
 """;
 
