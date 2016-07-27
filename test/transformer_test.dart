@@ -3,7 +3,7 @@ library transformer_test;
 import 'package:ex_map/transformer.dart';
 import 'package:transformer_test/utils.dart';
 
-String _source = """
+String _entrySource = """
 library ex_map_test;
 
 import 'package:ex_map/ex_map.dart';
@@ -19,6 +19,8 @@ class TestMap extends ExtendedMap {
   @MapKey(type: String)
   var testField;
 }
+
+main();
 """;
 
 String _expectedSource = """
@@ -37,13 +39,15 @@ class TestMap extends ExtendedMap {
   @MapKey(type: String)
   var testField;
 }
+
+main();
 """;
 
 void main() {
   testPhases('ExMap transformer must work', [
     [new TransformObjectToMap()]
   ], {
-    'a|test/ex_map_test.dart': _source
+    'a|test/ex_map_test.dart': _entrySource
   }, {
     'a|test/ex_map_test.dart': 'source',
   });

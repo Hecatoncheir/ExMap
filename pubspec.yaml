@@ -8,4 +8,6 @@ dev_dependencies:
   transformer_test: '^0.2.1'
 
 transformers:
-  - ex_map
+  - ex_map:
+    entry_points:
+      - map_annotation_test

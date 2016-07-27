@@ -1,47 +1,55 @@
 library ex_map_transformer;
 
-// @MirrorsUsed(symbols: 'ExMap')
-// import 'dart:mirrors';
-import 'dart:async';
-
 import 'package:barback/barback.dart';
 
-import 'package:smoke/codegen/generator.dart';
-import 'package:smoke/codegen/recorder.dart';
-
+/// CodeTransformers
 import 'package:code_transformers/resolver.dart';
+import 'package:analyzer/dart/element/element.dart';
+
+/// Smoke
+import 'package:smoke/codegen/recorder.dart';
+import 'package:smoke/codegen/generator.dart';
+
+import 'package:ex_map/ex_map.dart';
 
 class TransformObjectToMap extends Transformer with ResolverTransformer {
-  SmokeCodeGenerator generator;
-
-  TransformObjectToMap();
-
-  TransformObjectToMap.asPlugin() {
-    generator = new SmokeCodeGenerator();
+  TransformObjectToMap() {
     resolvers = new Resolvers(dartSdkDirectory);
   }
 
+  TransformObjectToMap.asPlugin();
+
   String get allowedExtensions => '.dart';
 
-  // Future apply(Transform transform) async {
-  //   AssetId id = transform.primaryInput.id;
-  //   String _source = await transform.primaryInput.readAsString();
-  //
-  //   Asset asset = new Asset.fromString(id, _source);
-  //   transform.addOutput(asset);
-  // }
-
+  @override
   applyResolver(Transform transform, Resolver resolver) {
-    print('test');
-    // AssetId id = transform.primaryInput.id;
-    // String source = await transform.primaryInput.readAsString();
-    // Asset asset = new Asset.fromString(id, 'hi');
-
-    Asset asset = _prepareAsset(transform, resolver);
+    AssetId id = transform.primaryInput.id;
+    Asset asset =
+        new Asset.fromString(id, _transform(assetId: id, resolver: resolver));
     transform.addOutput(asset);
   }
 
-  Asset _prepareAsset(Transform transform, Resolver resolver) {
-    return new Asset.fromString(transform.primaryInput.id, 'source');
+  String _transform({AssetId assetId, Resolver resolver}) {
+    SmokeCodeGenerator generator = new SmokeCodeGenerator();
+
+    String _recordChecker(lib) {
+      return resolver.getImportUri(lib, from: assetId).toString();
+    }
+
+    Recorder recorder = new Recorder(generator, _recordChecker);
+
+    LibraryElement library = resolver.getLibrary(assetId);
+
+    StringBuffer output = new StringBuffer();
+    output.write('/// ExMapTransformed \n');
+
+    // recorder.generator.addDeclaration(cls, name, type);
+
+    recorder.generator
+      ..writeImports(output)
+      ..writeTopLevelDeclarations(output)
+      ..writeStaticConfiguration(output);
+
+    return output.toString();
   }
 }
