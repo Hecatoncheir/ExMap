@@ -1,5 +1,6 @@
 library ex_map_transformer;
 
+import 'package:analyzer/analyzer.dart';
 import 'package:barback/barback.dart';
 
 /// CodeTransformers
@@ -39,6 +40,25 @@ class TransformObjectToMap extends Transformer with ResolverTransformer {
     Recorder recorder = new Recorder(generator, _recordChecker);
 
     LibraryElement library = resolver.getLibrary(assetId);
+    library.units.forEach((CompilationUnitElement el) {
+      /// Member must be a class and has annotation ExMap
+      bool _checkMetaDataAnnotation(CompilationUnitMember unit) {
+        Iterable unitMetaData =
+            unit.metadata.map((annotation) => annotation.toString());
+
+        if (unit is ClassDeclaration && unitMetaData.contains('@ExMap'))
+          return true;
+        return false;
+      }
+
+      Iterable annotatedClasses =
+          el.unit.declarations.where(_checkMetaDataAnnotation);
+
+      for (ClassDeclaration classDeclaration in annotatedClasses) {
+        /// Class members
+        classDeclaration.members;
+      }
+    });
 
     StringBuffer output = new StringBuffer();
     output.write('/// ExMapTransformed \n');
