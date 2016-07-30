@@ -1,8 +1,6 @@
 name: ex_map
 dependencies:
   barback: '^0.15.2+8'
-  smoke: '^0.3.6+2'
-  code_transformers: '^0.4.2+2'
 dev_dependencies:
   test: '^0.12.15+1'
   transformer_test: '^0.2.1'

@@ -19,8 +19,6 @@ class TestMap extends ExtendedMap {
   @ExKey(type: String)
   var testField;
 }
-
-main();
 """;
 
 String _expectedSource = """
@@ -39,8 +37,6 @@ class TestMap extends ExtendedMap {
   @ExKey(type: String)
   var testField;
 }
-
-main();
 """;
 
 void main() {
