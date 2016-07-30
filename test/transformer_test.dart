@@ -18,7 +18,11 @@ class TestMap extends ExtendedMap {
 
   @ExKey(type: String)
   var testField;
+
+  var notAnnotatedProperty;
 }
+
+class NotAnnotatedClass {}
 """;
 
 String _expectedSource = """

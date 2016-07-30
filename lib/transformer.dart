@@ -56,12 +56,21 @@ class TransformObjectToMap extends Transformer {
       Iterable annotatedProperties =
           classDeclaration.members.where(_classPropertyMustBeAnnotated);
 
-      annotatedProperties.forEach(print);
+      annotatedProperties.forEach((ClassMember property) {
+        String before = source.substring(0, property.beginToken.offset);
+        String after = source.substring(property.endToken.offset);
 
-//        String before = content.substring(0, declaration.endToken.offset);
-//        String after = content.substring(declaration.endToken.offset);
-//
-//        newContent = before + "\n$sourceToInject\n" + after;
+        String propertyName = 'propertyName';
+
+        String getterSource = "set $propertyName => this[$propertyName];";
+        String setterSource =
+            "  get $propertyName(value) => this[$propertyName] = value";
+
+        String updatedSource =
+            '$before' + '$getterSource' + '\n' + '$setterSource' + '$after';
+
+        print(updatedSource);
+      });
     }
 
     return 'source';
