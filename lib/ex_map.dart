@@ -4,6 +4,6 @@ export 'src/extended_map.dart';
 
 const String ExMap = 'ExMap';
 
-class MapKey {
-  const MapKey({bool protected, Type type});
+class ExKey {
+  const ExKey({bool protected, Type type});
 }

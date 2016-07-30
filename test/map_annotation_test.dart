@@ -6,13 +6,13 @@ import 'package:ex_map/ex_map.dart';
 
 @ExMap
 class TestMap extends ExtendedMap {
-  @MapKey()
+  @ExKey()
   int id;
 
-  @MapKey(protected: true, type: int)
+  @ExKey(protected: true, type: int)
   int integerField;
 
-  @MapKey(type: String)
+  @ExKey(type: String)
   var testField;
 }
 

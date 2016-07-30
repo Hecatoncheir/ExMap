@@ -42,7 +42,7 @@ class TransformObjectToMap extends Transformer with ResolverTransformer {
     LibraryElement library = resolver.getLibrary(assetId);
     library.units.forEach((CompilationUnitElement el) {
       /// Member must be a class and has annotation ExMap
-      bool _checkMetaDataAnnotation(CompilationUnitMember unit) {
+      bool _classMustBeAnnotated(CompilationUnitMember unit) {
         Iterable unitMetaData =
             unit.metadata.map((annotation) => annotation.toString());
 
@@ -52,24 +52,34 @@ class TransformObjectToMap extends Transformer with ResolverTransformer {
       }
 
       Iterable annotatedClasses =
-          el.unit.declarations.where(_checkMetaDataAnnotation);
+          el.unit.declarations.where(_classMustBeAnnotated);
 
       for (ClassDeclaration classDeclaration in annotatedClasses) {
+        /// Property must be annotated as ExKey
+        bool _classPropertyMustBeAnnotated(ClassMember classProperty) {
+          RegExp exKey = new RegExp('@ExKey');
+
+          Iterable unitMetaData = classProperty.metadata.map((annotation) {
+            String annotationName = annotation.toString();
+            if (exKey.hasMatch(annotationName)) return true;
+            return false;
+          });
+
+          if (unitMetaData.isNotEmpty) return true;
+          return false;
+        }
+
         /// Class members
-        classDeclaration.members;
+        Iterable annotatedProperties =
+            classDeclaration.members.where(_classPropertyMustBeAnnotated);
+
+//        String before = content.substring(0, declaration.endToken.offset);
+//        String after = content.substring(declaration.endToken.offset);
+//
+//        newContent = before + "\n$sourceToInject\n" + after;
       }
     });
 
-    StringBuffer output = new StringBuffer();
-    output.write('/// ExMapTransformed \n');
-
-    // recorder.generator.addDeclaration(cls, name, type);
-
-    recorder.generator
-      ..writeImports(output)
-      ..writeTopLevelDeclarations(output)
-      ..writeStaticConfiguration(output);
-
-    return output.toString();
+    return 'source';
   }
 }
