@@ -16,13 +16,13 @@ class TransformObjectToMap extends Transformer {
   apply(Transform transform) async {
     AssetId id = transform.primaryInput.id;
     String assetSource = await transform.readInputAsString(id);
-    Asset asset =
-        new Asset.fromString(id, _transform(assetId: id, source: assetSource));
+    Asset asset = new Asset.fromString(id, _transform(source: assetSource));
     transform.addOutput(asset);
   }
 
-  String _transform({AssetId assetId, String source}) {
+  String _transform({String source}) {
     CompilationUnit unit = parseCompilationUnit(source);
+    String updatedSource = source;
 
     /// Member must be a class and has annotation ExMap
     bool _classMustBeAnnotated(CompilationUnitMember unit) {
@@ -62,17 +62,16 @@ class TransformObjectToMap extends Transformer {
 
         String propertyName = 'propertyName';
 
-        String getterSource = "set $propertyName => this[$propertyName];";
+        String getterSource = "get $propertyName => this[$propertyName];";
         String setterSource =
-            "  get $propertyName(value) => this[$propertyName] = value";
+            "  set $propertyName(value) => this[$propertyName] = value";
 
-        String updatedSource =
+        String transformedSource =
             '$before' + '$getterSource' + '\n' + '$setterSource' + '$after';
 
-        print(updatedSource);
+        updatedSource = _transform(source: transformedSource);
       });
     }
-
-    return 'source';
+    return updatedSource;
   }
 }

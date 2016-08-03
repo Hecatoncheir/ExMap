@@ -32,15 +32,19 @@ import 'package:ex_map/ex_map.dart';
 
 @ExMap
 class TestMap extends ExtendedMap {
-  @ExKey()
-  int id;
+  get propertyName => this[propertyName];
+  set propertyName(value) => this[propertyName] = value;
 
-  @ExKey(protected: true, type: int)
-  int integerField;
+  get propertyName => this[propertyName];
+  set propertyName(value) => this[propertyName] = value;
 
-  @ExKey(type: String)
-  var testField;
+  get propertyName => this[propertyName];
+  set propertyName(value) => this[propertyName] = value;
+  
+  var notAnnotatedProperty;
 }
+
+class NotAnnotatedClass {}
 """;
 
 void main() {
@@ -49,6 +53,6 @@ void main() {
   ], {
     'a|test/ex_map_test.dart': _entrySource
   }, {
-    'a|test/ex_map_test.dart': 'source',
+    'a|test/ex_map_test.dart': _expectedSource,
   });
 }
