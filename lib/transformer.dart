@@ -8,6 +8,14 @@ import 'package:ex_map/ex_map.dart';
 class TransformObjectToMap extends Transformer {
   TransformObjectToMap();
 
+  /// https://www.debuggex.com/r/C-2V8KM59bX9pY9M
+  /// Group1: protected or type, group2: bool or type,
+  /// group3: real type, group4: nameOfDeclaration
+  RegExp keyAnnotatedClassMemberDeclarationPattern = new RegExp(
+      r'(protected|type)?:? ?(true|false|int|String)?(int|String)? ?([a-zA-Z]*;)?',
+      multiLine: true,
+      caseSensitive: false);
+
   TransformObjectToMap.asPlugin();
 
   String get allowedExtensions => '.dart';
@@ -60,11 +68,29 @@ class TransformObjectToMap extends Transformer {
         String before = source.substring(0, property.beginToken.offset);
         String after = source.substring(property.endToken.offset);
 
-        String propertyName = 'propertyName';
+        String protectedField;
+        String protectedFieldValue;
 
-        String getterSource = "get $propertyName => this[$propertyName];";
+        String propertyName;
+
+        Iterable<Match> matches = keyAnnotatedClassMemberDeclarationPattern
+            .allMatches(property.toString());
+
+        for (Match allGroups in matches) {
+          if (allGroups[1] != null) {}
+
+          if (allGroups[2] != null) {
+            protectedFieldValue = allGroups[2];
+          }
+
+          if (allGroups[4] != null) {
+            propertyName = allGroups[4].replaceAll(';', '');
+          }
+        }
+
+        String getterSource = "get $propertyName => this['$propertyName'];";
         String setterSource =
-            "  set $propertyName(value) => this[$propertyName] = value";
+            "  set $propertyName(value) => this['$propertyName'] = value";
 
         String transformedSource =
             '$before' + '$getterSource' + '\n' + '$setterSource' + '$after';

@@ -32,14 +32,14 @@ import 'package:ex_map/ex_map.dart';
 
 @ExMap
 class TestMap extends ExtendedMap {
-  get propertyName => this[propertyName];
-  set propertyName(value) => this[propertyName] = value;
+  get id => this['id'];
+  set id(value) => this['id'] = value;
 
-  get propertyName => this[propertyName];
-  set propertyName(value) => this[propertyName] = value;
+  get integerField => this['integerField'];
+  set integerField(value) => this['integerField'] = value;
 
-  get propertyName => this[propertyName];
-  set propertyName(value) => this[propertyName] = value;
+  get testField => this['testField'];
+  set testField(value) => this['testField'] = value;
   
   var notAnnotatedProperty;
 }
