@@ -14,7 +14,7 @@ class TestMap extends ExtendedMap {
   int id;
 
   @ExKey(protected: true, type: int)
-  int integerField;
+  String integerField;
 
   @ExKey(type: String)
   var testField;

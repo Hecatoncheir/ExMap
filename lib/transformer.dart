@@ -12,7 +12,7 @@ class TransformObjectToMap extends Transformer {
   /// Group1: protected or type, group2: bool or type,
   /// group3: real type, group4: nameOfDeclaration
   RegExp keyAnnotatedClassMemberDeclarationPattern = new RegExp(
-      r'(protected|type)?:? ?(true|false|int|String)?(int|String)? ?([a-zA-Z]*;)?',
+      r'(protected|type)?:? ?(true|false|int|String)? ?(var|int|String) ([a-zA-Z]*)',
       multiLine: true,
       caseSensitive: false);
 
@@ -68,23 +68,39 @@ class TransformObjectToMap extends Transformer {
         String before = source.substring(0, property.beginToken.offset);
         String after = source.substring(property.endToken.offset);
 
-        String protectedField;
         String protectedFieldValue;
+        String typeFieldValue;
 
         String propertyName;
+        String propertyType = 'dynamic';
 
         Iterable<Match> matches = keyAnnotatedClassMemberDeclarationPattern
             .allMatches(property.toString());
 
         for (Match allGroups in matches) {
-          if (allGroups[1] != null) {}
+          if (allGroups[1] != null) {
+            if (allGroups[1] == 'protected') {
+              /// true or false
+              if (allGroups[2] != null) {
+                protectedFieldValue = allGroups[2];
+              }
+            }
 
-          if (allGroups[2] != null) {
-            protectedFieldValue = allGroups[2];
+            if (allGroups[1] == 'type') {
+              /// String or int
+              if (allGroups[2] != null) {
+                typeFieldValue = allGroups[2];
+              }
+            }
+          }
+
+          if (allGroups[3] != null) {
+            /// var, int or String
+            propertyType = allGroups[3];
           }
 
           if (allGroups[4] != null) {
-            propertyName = allGroups[4].replaceAll(';', '');
+            propertyName = allGroups[4];
           }
         }
 
@@ -93,7 +109,7 @@ class TransformObjectToMap extends Transformer {
             "  set $propertyName(value) => this['$propertyName'] = value";
 
         String transformedSource =
-            '$before' + '$getterSource' + '\n' + '$setterSource' + '$after';
+            before + getterSource + '\n' + setterSource + after;
 
         updatedSource = _transform(source: transformedSource);
       });
