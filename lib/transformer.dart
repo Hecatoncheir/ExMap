@@ -8,11 +8,9 @@ import 'package:ex_map/ex_map.dart';
 class TransformObjectToMap extends Transformer {
   TransformObjectToMap();
 
-  /// https://www.debuggex.com/r/C-2V8KM59bX9pY9M
-  /// Group1: protected or type, group2: bool or type,
-  /// group3: real type, group4: nameOfDeclaration
+  /// https://www.debuggex.com/r/MOY4Zw0u3UVnJIDN
   RegExp keyAnnotatedClassMemberDeclarationPattern = new RegExp(
-      r'(protected|type)?:? ?(true|false|int|String)? ?(var|int|String) ([a-zA-Z]*)',
+      r'@ExKey[( ]*(type|protected)?[ :]*(int|String|true)?[, ]*(type|protected)?[ :]*(int|String|true)?[ )]* (int|String|var) ([a-zA-Z]*)',
       multiLine: true,
       caseSensitive: false);
 
@@ -60,56 +58,72 @@ class TransformObjectToMap extends Transformer {
         return false;
       }
 
+      List protectedKeys = new List();
+      Map types = new Map();
+
       /// Only annotated members of annotated class
       Iterable annotatedProperties =
           classDeclaration.members.where(_classPropertyMustBeAnnotated);
 
       annotatedProperties.forEach((ClassMember property) {
-        String before = source.substring(0, property.beginToken.offset);
-        String after = source.substring(property.endToken.offset);
-
-        String protectedFieldValue;
-        String typeFieldValue;
-
+        String typeFieldValue; // From ExKey annotation
         String propertyName;
-        String propertyType = 'dynamic';
 
         Iterable<Match> matches = keyAnnotatedClassMemberDeclarationPattern
             .allMatches(property.toString());
 
         for (Match allGroups in matches) {
+          if (allGroups[6] != null) {
+            propertyName = allGroups[6];
+          }
+
+          /// For first ExKey property
           if (allGroups[1] != null) {
             if (allGroups[1] == 'protected') {
-              /// true or false
-              if (allGroups[2] != null) {
-                protectedFieldValue = allGroups[2];
+              if (allGroups[2] == 'true') {
+                protectedKeys.add(propertyName);
               }
             }
-
             if (allGroups[1] == 'type') {
-              /// String or int
-              if (allGroups[2] != null) {
-                typeFieldValue = allGroups[2];
-              }
+              typeFieldValue = allGroups[2];
             }
           }
 
-          if (allGroups[3] != null) {
-            /// var, int or String
-            propertyType = allGroups[3];
+          /// For second ExKey property
+          if (allGroups[1] != null) {
+            if (allGroups[1] == 'protected') {
+              if (allGroups[2] == 'true') {
+                protectedKeys.add(propertyName);
+              }
+            }
+            if (allGroups[1] == 'type') {
+              typeFieldValue = allGroups[2];
+            }
           }
 
-          if (allGroups[4] != null) {
-            propertyName = allGroups[4];
+          if (allGroups[5] != null) {
+            if (typeFieldValue == null || typeFieldValue.isEmpty) {
+              typeFieldValue = allGroups[5];
+            }
           }
         }
+
+        /// Class declaration
+        types[propertyName] = typeFieldValue;
+
+        String beforeClass = source.substring(0, property.parent.beginToken.offset);
+        String afterClass = source.substring(property.parent.endToken.offset);
+
+        /// Field declaration
+        String beforeField = source.substring(0, property.beginToken.offset);
+        String afterField = source.substring(property.endToken.offset);
 
         String getterSource = "get $propertyName => this['$propertyName'];";
         String setterSource =
             "  set $propertyName(value) => this['$propertyName'] = value";
 
         String transformedSource =
-            before + getterSource + '\n' + setterSource + after;
+            beforeField + getterSource + '\n' + setterSource + afterField;
 
         updatedSource = _transform(source: transformedSource);
       });
