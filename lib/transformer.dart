@@ -44,6 +44,9 @@ class TransformObjectToMap extends Transformer {
     Iterable annotatedClasses = unit.declarations.where(_classMustBeAnnotated);
 
     for (ClassDeclaration classDeclaration in annotatedClasses) {
+      List protectedKeys = new List();
+      Map types = new Map();
+
       /// Property must be annotated as ExKey
       bool _classPropertyMustBeAnnotated(ClassMember classProperty) {
         RegExp exKey = new RegExp('@ExKey');
@@ -58,15 +61,12 @@ class TransformObjectToMap extends Transformer {
         return false;
       }
 
-      List protectedKeys = new List();
-      Map types = new Map();
-
       /// Only annotated members of annotated class
       Iterable annotatedProperties =
           classDeclaration.members.where(_classPropertyMustBeAnnotated);
 
       annotatedProperties.forEach((ClassMember property) {
-        String typeFieldValue; // From ExKey annotation
+        String typeFieldValue = 'dynamic'; // From ExKey annotation
         String propertyName;
 
         Iterable<Match> matches = keyAnnotatedClassMemberDeclarationPattern
@@ -90,14 +90,14 @@ class TransformObjectToMap extends Transformer {
           }
 
           /// For second ExKey property
-          if (allGroups[1] != null) {
-            if (allGroups[1] == 'protected') {
-              if (allGroups[2] == 'true') {
+          if (allGroups[3] != null) {
+            if (allGroups[3] == 'protected') {
+              if (allGroups[4] == 'true') {
                 protectedKeys.add(propertyName);
               }
             }
-            if (allGroups[1] == 'type') {
-              typeFieldValue = allGroups[2];
+            if (allGroups[3] == 'type') {
+              typeFieldValue = allGroups[4];
             }
           }
 
@@ -105,14 +105,9 @@ class TransformObjectToMap extends Transformer {
             if (typeFieldValue == null || typeFieldValue.isEmpty) {
               typeFieldValue = allGroups[5];
             }
+            types[propertyName] = typeFieldValue;
           }
         }
-
-        /// Class declaration
-        types[propertyName] = typeFieldValue;
-
-        String beforeClass = source.substring(0, property.parent.beginToken.offset);
-        String afterClass = source.substring(property.parent.endToken.offset);
 
         /// Field declaration
         String beforeField = source.substring(0, property.beginToken.offset);
@@ -125,9 +120,25 @@ class TransformObjectToMap extends Transformer {
         String transformedSource =
             beforeField + getterSource + '\n' + setterSource + afterField;
 
+        if (annotatedProperties.length == 3) {
+          /// Class declaration
+          String beforeClassDeclaration = transformedSource.substring(
+              0, classDeclaration.leftBracket.offset + 1);
+          String afterclassDeclaration = transformedSource
+              .substring(classDeclaration.leftBracket.offset + 1);
+
+          transformedSource = beforeClassDeclaration +
+              '\n' +
+              '  List protectedKeys = $protectedKeys;' +
+              '\n' +
+              '  Map types = $types;' +
+              '\n' +
+              afterclassDeclaration;
+        }
         updatedSource = _transform(source: transformedSource);
       });
     }
+
     return updatedSource;
   }
 }
