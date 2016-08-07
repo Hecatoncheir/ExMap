@@ -3,8 +3,6 @@ library ex_map_transformer;
 import 'package:analyzer/analyzer.dart';
 import 'package:barback/barback.dart';
 
-import 'package:ex_map/ex_map.dart';
-
 class TransformObjectToMap extends Transformer {
   TransformObjectToMap();
 
@@ -26,6 +24,8 @@ class TransformObjectToMap extends Transformer {
     transform.addOutput(asset);
   }
 
+  Map<String, int> maxAnnotatedPropertiesPerAnnotetedClass = new Map();
+
   String _transform({String source}) {
     CompilationUnit unit = parseCompilationUnit(source);
     String updatedSource = source;
@@ -44,8 +44,8 @@ class TransformObjectToMap extends Transformer {
     Iterable annotatedClasses = unit.declarations.where(_classMustBeAnnotated);
 
     for (ClassDeclaration classDeclaration in annotatedClasses) {
-      List protectedKeys = new List();
-      Map types = new Map();
+      List<String> protectedKeys = new List();
+      Map<String, String> types = new Map();
 
       /// Property must be annotated as ExKey
       bool _classPropertyMustBeAnnotated(ClassMember classProperty) {
@@ -64,6 +64,11 @@ class TransformObjectToMap extends Transformer {
       /// Only annotated members of annotated class
       Iterable annotatedProperties =
           classDeclaration.members.where(_classPropertyMustBeAnnotated);
+
+      if (!maxAnnotatedPropertiesPerAnnotetedClass.containsKey(classDeclaration.name.toString())) {
+        maxAnnotatedPropertiesPerAnnotetedClass[classDeclaration.name.toString()] =
+            annotatedProperties.length;
+      }
 
       annotatedProperties.forEach((ClassMember property) {
         String typeFieldValue = 'dynamic'; // From ExKey annotation
@@ -120,8 +125,9 @@ class TransformObjectToMap extends Transformer {
         String transformedSource =
             beforeField + getterSource + '\n' + setterSource + afterField;
 
-        if (annotatedProperties.length == 3) {
-          /// Class declaration
+        /// Class declaration
+        if (annotatedProperties.length ==
+            maxAnnotatedPropertiesPerAnnotetedClass[classDeclaration.name.toString()]) {
           String beforeClassDeclaration = transformedSource.substring(
               0, classDeclaration.leftBracket.offset + 1);
           String afterclassDeclaration = transformedSource

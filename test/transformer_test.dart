@@ -22,6 +22,14 @@ class TestMap extends ExtendedMap {
   var notAnnotatedProperty;
 }
 
+@ExMap
+class TestMapAgane extends ExtendedMap {
+  @ExKey()
+  int id;
+
+  var notAnnotatedProperty;
+}
+
 class NotAnnotatedClass {}
 """;
 
@@ -44,6 +52,17 @@ class TestMap extends ExtendedMap {
   get testField => this['testField'];
   set testField(value) => this['testField'] = value;
   
+  var notAnnotatedProperty;
+}
+
+@ExMap
+class TestMapAgane extends ExtendedMap {
+  List protectedKeys = [];
+  Map types = {id: dynamic};
+
+  get id => this['id'];
+  set id(value) => this['id'] = value;
+
   var notAnnotatedProperty;
 }
 
