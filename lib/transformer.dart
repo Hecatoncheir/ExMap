@@ -65,9 +65,10 @@ class TransformObjectToMap extends Transformer {
       Iterable annotatedProperties =
           classDeclaration.members.where(_classPropertyMustBeAnnotated);
 
-      if (!maxAnnotatedPropertiesPerAnnotetedClass.containsKey(classDeclaration.name.toString())) {
-        maxAnnotatedPropertiesPerAnnotetedClass[classDeclaration.name.toString()] =
-            annotatedProperties.length;
+      if (!maxAnnotatedPropertiesPerAnnotetedClass
+          .containsKey(classDeclaration.name.toString())) {
+        maxAnnotatedPropertiesPerAnnotetedClass[
+            classDeclaration.name.toString()] = annotatedProperties.length;
       }
 
       annotatedProperties.forEach((ClassMember property) {
@@ -127,7 +128,8 @@ class TransformObjectToMap extends Transformer {
 
         /// Class declaration
         if (annotatedProperties.length ==
-            maxAnnotatedPropertiesPerAnnotetedClass[classDeclaration.name.toString()]) {
+            maxAnnotatedPropertiesPerAnnotetedClass[
+                classDeclaration.name.toString()]) {
           String beforeClassDeclaration = transformedSource.substring(
               0, classDeclaration.leftBracket.offset + 1);
           String afterclassDeclaration = transformedSource
@@ -135,9 +137,14 @@ class TransformObjectToMap extends Transformer {
 
           transformedSource = beforeClassDeclaration +
               '\n' +
-              '  List protectedKeys = $protectedKeys;' +
               '\n' +
-              '  Map types = $types;' +
+              '  ${classDeclaration.name.toString()}() {' +
+              '\n' +
+              '    protectedKeys = $protectedKeys;' +
+              '\n' +
+              '    types = $types;' +
+              '\n' +
+              '  }' +
               '\n' +
               afterclassDeclaration;
         }

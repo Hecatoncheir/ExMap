@@ -40,8 +40,11 @@ import 'package:ex_map/ex_map.dart';
 
 @ExMap
 class TestMap extends ExtendedMap {
-  List protectedKeys = [integerField];
-  Map types = {id: dynamic, integerField: int, testField: String};
+
+  TestMap() {
+    protectedKeys = [integerField];
+    types = {id: dynamic, integerField: int, testField: String};
+  }
 
   get id => this['id'];
   set id(value) => this['id'] = value;
@@ -57,8 +60,11 @@ class TestMap extends ExtendedMap {
 
 @ExMap
 class TestMapAgane extends ExtendedMap {
-  List protectedKeys = [];
-  Map types = {id: dynamic};
+
+  TestMapAgane() {
+    protectedKeys = [];
+    types = {id: dynamic};
+  }
 
   get id => this['id'];
   set id(value) => this['id'] = value;
