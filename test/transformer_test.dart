@@ -42,8 +42,8 @@ import 'package:ex_map/ex_map.dart';
 class TestMap extends ExtendedMap {
 
   TestMap() {
-    protectedKeys = [integerField];
-    types = {id: dynamic, integerField: int, testField: String};
+    protectedKeys = ['integerField'];
+    types = {'id': int, 'integerField': int, 'testField': String};
   }
 
   get id => this['id'];
@@ -63,7 +63,7 @@ class TestMapAgane extends ExtendedMap {
 
   TestMapAgane() {
     protectedKeys = [];
-    types = {id: dynamic};
+    types = {'id': int};
   }
 
   get id => this['id'];
@@ -74,8 +74,6 @@ class TestMapAgane extends ExtendedMap {
 
 class NotAnnotatedClass {}
 """;
-
-//Map types = {'id':int, 'integerField': String, 'testField': String};
 
 void main() {
   testPhases('ExMap transformer must work', [

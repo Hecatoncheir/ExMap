@@ -108,7 +108,7 @@ class TransformObjectToMap extends Transformer {
           }
 
           if (allGroups[5] != null) {
-            if (typeFieldValue == null || typeFieldValue.isEmpty) {
+            if (typeFieldValue == 'dynamic') {
               typeFieldValue = allGroups[5];
             }
             types[propertyName] = typeFieldValue;
@@ -135,18 +135,40 @@ class TransformObjectToMap extends Transformer {
           String afterclassDeclaration = transformedSource
               .substring(classDeclaration.leftBracket.offset + 1);
 
-          transformedSource = beforeClassDeclaration +
-              '\n' +
-              '\n' +
-              '  ${classDeclaration.name.toString()}() {' +
-              '\n' +
-              '    protectedKeys = $protectedKeys;' +
-              '\n' +
-              '    types = $types;' +
-              '\n' +
-              '  }' +
-              '\n' +
-              afterclassDeclaration;
+          StringBuffer stringBuffer = new StringBuffer();
+          stringBuffer
+            ..write(beforeClassDeclaration)
+            ..write('\n\n')
+            ..write('  ${classDeclaration.name.toString()}() {')
+            ..write('\n')
+            ..write('    protectedKeys = [');
+
+          for (String pk in protectedKeys) {
+            int index = protectedKeys.indexOf(pk);
+            if (index == protectedKeys.length - 1) {
+              stringBuffer.write("'$pk'");
+            } else {
+              stringBuffer.write("'$pk', ");
+            }
+          }
+
+          stringBuffer..write('];')..write('\n')..write('    types = {');
+
+          for (String field in types.keys) {
+            if (field == types.keys.last) {
+              stringBuffer.write("'$field': ${types[field]}");
+            } else {
+              stringBuffer.write("'$field': ${types[field]}, ");
+            }
+          }
+          stringBuffer
+            ..write('};')
+            ..write('\n')
+            ..write('  }')
+            ..write('\n')
+            ..write(afterclassDeclaration);
+
+          transformedSource = stringBuffer.toString();
         }
         updatedSource = _transform(source: transformedSource);
       });
