@@ -1,3 +1,7 @@
+[![Build Status](https://codeship.com/projects/bbc87340-415a-0134-5cdb-527eefe58aba/status?branch=master
+)](https://codeship.com/projects/bbc87340-415a-0134-5cdb-527eefe58aba/status?branch=master
+)
+
 With the object easier to work when he has a good Map api. Such an object is serialized and deserialized well.
 The class constructor can be designated  properties of map and types, and properties be designed with get and set:
 
