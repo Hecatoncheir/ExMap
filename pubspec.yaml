@@ -7,3 +7,5 @@ dev_dependencies:
 
 transformers:
   - ex_map
+  - test/pub_serve:
+      $include: test/**_test{.*,}.dart
