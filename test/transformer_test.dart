@@ -42,7 +42,7 @@ import 'package:ex_map/ex_map.dart';
 class TestMap extends ExtendedMap {
 
   TestMap() {
-    protectedKeys = ['integerField'];
+    protectedKeys.addAll(['integerField']);
     types = {'id': int, 'integerField': int, 'testField': String};
   }
 
@@ -62,7 +62,7 @@ class TestMap extends ExtendedMap {
 class TestMapAgane extends ExtendedMap {
 
   TestMapAgane() {
-    protectedKeys = [];
+    protectedKeys.addAll([]);
     types = {'id': int};
   }
 
@@ -128,7 +128,7 @@ import 'package:ex_map/ex_map.dart';
 class TestMap extends ExtendedMap {
 
   TestMap() {
-    protectedKeys = ['integerField'];
+    protectedKeys.addAll(['integerField']);
     types = {'id': int, 'integerField': int, 'testField': String};
   }
 
@@ -169,7 +169,7 @@ void main() {
 
 void main() {
   testPhases('ExMap transformer must work', [
-    [new TransformObjectToMap()]
+    [new TransformExMap()]
   ], {
     'a|test/ex_map_test.dart': _entrySource
   }, {
@@ -177,10 +177,10 @@ void main() {
   });
 
   testPhases('Annoteted class must be transformed', [
-    [new TransformObjectToMap()]
+    [new TransformExMap()]
   ], {
-    'a|test/map_annotation_test.dart': _mapAnnotationTest
+    'b|test/map_annotation_test.dart': _mapAnnotationTest
   }, {
-    'a|test/map_annotation_test.dart': _expectedMapAnnotationTest,
+    'b|test/map_annotation_test.dart': _expectedMapAnnotationTest,
   });
 }

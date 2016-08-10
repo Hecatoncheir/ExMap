@@ -3,8 +3,8 @@ library ex_map_transformer;
 import 'package:analyzer/analyzer.dart';
 import 'package:barback/barback.dart';
 
-class TransformObjectToMap extends Transformer {
-  TransformObjectToMap();
+class TransformExMap extends Transformer {
+  TransformExMap();
 
   /// https://www.debuggex.com/r/MOY4Zw0u3UVnJIDN
   RegExp keyAnnotatedClassMemberDeclarationPattern = new RegExp(
@@ -12,7 +12,7 @@ class TransformObjectToMap extends Transformer {
       multiLine: true,
       caseSensitive: false);
 
-  TransformObjectToMap.asPlugin();
+  TransformExMap.asPlugin();
 
   String get allowedExtensions => '.dart';
 
@@ -141,7 +141,7 @@ class TransformObjectToMap extends Transformer {
             ..write('\n\n')
             ..write('  ${classDeclaration.name.toString()}() {')
             ..write('\n')
-            ..write('    protectedKeys = [');
+            ..write('    protectedKeys.addAll([');
 
           for (String pk in protectedKeys) {
             int index = protectedKeys.indexOf(pk);
@@ -152,7 +152,7 @@ class TransformObjectToMap extends Transformer {
             }
           }
 
-          stringBuffer..write('];')..write('\n')..write('    types = {');
+          stringBuffer..write(']);')..write('\n')..write('    types = {');
 
           for (String field in types.keys) {
             if (field == types.keys.last) {

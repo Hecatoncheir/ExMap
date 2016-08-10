@@ -7,7 +7,7 @@ import 'package:ex_map/ex_map.dart';
 
 class TestMap extends ExtendedMap {
   TestMap({id, integerField, testField}) {
-    protectedKeys.add('id');
+    protectedKeys.addAll(['id']);
     types = {'testField': String, 'integerField': int};
   }
 
