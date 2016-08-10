@@ -1,20 +1,18 @@
-Иногда нужно иметь возможность работать со свойствами объекта так же удобно как с ключами Map'a. С самим объектом удобнее работать когда у него есть хорошие api Map'a. Такой объект хорошо сериализуется и десериализуется.
-
-В конструкторе классa можно обозначить Map из свойств и типов, а самим свойствам назначать get и set:
+With the object easier to work when he has a good Map api. Such an object is serialized and deserialized well.
+The class constructor can be designated  properties of map and types, and properties be designed with get and set:
 
 ```dart
 class TestMap extends ExtendedMap {
   TestMap({id, integerField, testField}) {
-    /// Свойство нельзя будет установить иначе кроме как через специальный метод
+    /// The property can not be set differently than through special method
     protectedKeys.add('id');
     types = {'testField': String, 'integerField': int};
   }
 
-  /// Свойство можно будет установить только через оператор "."
+  /// The property can be established only through the operator: "."
   get id => this['id'];
   set id(value) => setProtectedField('id', value);
 
-  /// Тут можно было бы обозначить типы
   get integerField => this['integerField'];
   set integerField(value) => this['integerField'] = value;
 
@@ -57,25 +55,32 @@ test('has a map interface', () {
 });
 ```
 
-### Аннотации
+### Annotation for transformer:
 
- Возможно библиотеку **dart:mirrors** уберут из sdk, но сейчас этим можно пользоваться, да и как отдельный пакет mirror, скорее всего, останутся.
-
-  Сократить объем работы с помощью аннотаций можно следующим образом:
 ``` dart
-import 'package:ex_map/ex_map.dart';
-
-@ExAMap()
-class TestMap extends ExMap {
-
-  @MapKey()
-  int id;
-
-  @MapKey(protected: true, type: int)
-  int integerField;
-
-  @MapKey(type: String)
-  String testField;
-}
-
+/// original source    =>   be transformed to   =>   ready for use 
+import 'package:ex_map/ex_map.dart';      ///    import 'package:ex_map/ex_map.dart';
+                                          ///
+@ExMap                                    ///    @ExMap
+class ExampleMap extends ExtendedMap {    ///    class ExampleMap extends ExtendedMap {
+  @ExKey()                                ///
+  int id;                                 ///       ExampleMap() {
+                                          ///         protectedKeys.addAll(['integerField']);
+  @ExKey(protected: true, type: int)      ///         types = {'id': int, 'integerField': int, 'testField': String};
+  int integerField;                       ///       }
+                                          ///       
+  @ExKey(type: String)                    ///       get id => this['id'];
+  var testField;                          ///       set id(value) => this['id'] = value;
+}                                         ///
+                                          ///       get integerField => this['integerField'];
+                                          ///       set integerFieldd(value) => this['integerField'] = value;
+                                          ///
+                                          ///       get testField => this['testField'];
+                                          ///       set testField(value) => this['testField'] = value;
+                                          ///    }
 ```
+
+TODO:
+  - Add more types support
+  - Add named parameters for constructor
+  - Support to save annotated class properties values
