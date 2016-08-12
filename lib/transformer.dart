@@ -150,7 +150,19 @@ class TransformExMap extends Transformer {
           stringBuffer
             ..write(beforeClassDeclaration)
             ..write('\n\n')
-            ..write('  ${classDeclaration.name.toString()}() {')
+            ..write('  ${classDeclaration.name.toString()}(');
+
+          stringBuffer.write('{');
+          for (String field in types.keys) {
+            if (field == types.keys.last) {
+              stringBuffer.write("${types[field]} $field}");
+            } else {
+              stringBuffer.write("${types[field]} $field, ");
+            }
+          }
+
+          stringBuffer
+            ..write(') {')
             ..write('\n')
             ..write('    protectedKeys.addAll([');
 

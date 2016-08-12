@@ -68,7 +68,7 @@ import 'package:ex_map/ex_map.dart';      ///    import 'package:ex_map/ex_map.d
 @ExMap                                    ///    @ExMap
 class ExampleMap extends ExtendedMap {    ///    class ExampleMap extends ExtendedMap {
   @ExKey()                                ///
-  int id;                                 ///       ExampleMap() {
+  int id;                                 ///       ExampleMap({int id, int integerField, String testField}) {
                                           ///         protectedKeys.addAll(['integerField']);
   @ExKey(protected: true, type: int)      ///         types = {'id': int, 'integerField': int, 'testField': String};
   int integerField = 1;                   ///         this.integerField = 1;

@@ -41,7 +41,7 @@ import 'package:ex_map/ex_map.dart';
 @ExMap
 class TestMap extends ExtendedMap {
 
-  TestMap() {
+  TestMap({int id, int integerField, String testField}) {
     protectedKeys.addAll(['integerField']);
     types = {'id': int, 'integerField': int, 'testField': String};
   }
@@ -61,7 +61,7 @@ class TestMap extends ExtendedMap {
 @ExMap
 class TestMapAgane extends ExtendedMap {
 
-  TestMapAgane() {
+  TestMapAgane({int id}) {
     protectedKeys.addAll([]);
     types = {'id': int};
   }
@@ -127,7 +127,7 @@ import 'package:ex_map/ex_map.dart';
 @ExMap
 class TestMap extends ExtendedMap {
 
-  TestMap() {
+  TestMap({int id, int integerField, String testField}) {
     protectedKeys.addAll(['integerField']);
     types = {'id': int, 'integerField': int, 'testField': String};
     this.integerField = 1;
