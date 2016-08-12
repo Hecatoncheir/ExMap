@@ -50,7 +50,7 @@ class TestMap extends ExtendedMap {
   set id(value) => this['id'] = value;
 
   get integerField => this['integerField'];
-  set integerField(value) => this['integerField'] = value;
+  set integerField(value) => setProtectedField('integerField', value);
 
   get testField => this['testField'];
   set testField(value) => this['testField'] = value;
@@ -87,10 +87,10 @@ class TestMap extends ExtendedMap {
   int id;
 
   @ExKey(protected: true, type: int)
-  int integerField;
-
+  int integerField = 1;
+  
   @ExKey(type: String)
-  var testField;
+  var testField = 'test';
 }
 
 void main() {
@@ -130,13 +130,15 @@ class TestMap extends ExtendedMap {
   TestMap() {
     protectedKeys.addAll(['integerField']);
     types = {'id': int, 'integerField': int, 'testField': String};
+    this.integerField = 1;
+    this['testField'] = 'test';
   }
 
   get id => this['id'];
   set id(value) => this['id'] = value;
 
   get integerField => this['integerField'];
-  set integerField(value) => this['integerField'] = value;
+  set integerField(value) => setProtectedField('integerField', value);
 
   get testField => this['testField'];
   set testField(value) => this['testField'] = value;

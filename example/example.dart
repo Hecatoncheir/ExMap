@@ -9,10 +9,10 @@ class ExampleMap extends ExtendedMap {
   int id;
 
   @ExKey(protected: true, type: int)
-  int integerField;
+  int integerField = 1;
 
   @ExKey(type: String)
-  var testField;
+  var testField = 'test';
 }
 
 main() {
@@ -21,5 +21,9 @@ main() {
   querySelector('body')
     ..appendText('keys: ${exampleMap.keys.toString()}')
     ..append(new Element.br())
-    ..appendText('id: ${exampleMap.id}');
+    ..appendText('id: ${exampleMap.id}')
+    ..append(new Element.br())
+    ..appendText('integerField: ${exampleMap.integerField}')
+    ..append(new Element.br())
+    ..appendText('testField: ${exampleMap["testField"]}');
 }

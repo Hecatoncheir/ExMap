@@ -8,7 +8,7 @@ class TransformExMap extends Transformer {
 
   /// https://www.debuggex.com/r/MOY4Zw0u3UVnJIDN
   RegExp keyAnnotatedClassMemberDeclarationPattern = new RegExp(
-      r'@ExKey[( ]*(type|protected)?[ :]*(int|String|true)?[, ]*(type|protected)?[ :]*(int|String|true)?[ )]* (int|String|var) ([a-zA-Z]*)',
+      r"@ExKey[( ]*(type|protected)?[ :]*(int|String|true)?[, ]*(type|protected)?[ :]*(int|String|true)?[ )]* (int|String|var) ([a-zA-Z]*) ?[ =]? ?([a-zA-Z0-9']*)",
       multiLine: true,
       caseSensitive: false);
 
@@ -46,6 +46,7 @@ class TransformExMap extends Transformer {
     for (ClassDeclaration classDeclaration in annotatedClasses) {
       List<String> protectedKeys = new List();
       Map<String, String> types = new Map();
+      Map keyAndValue = new Map();
 
       /// Property must be annotated as ExKey
       bool _classPropertyMustBeAnnotated(ClassMember classProperty) {
@@ -113,6 +114,10 @@ class TransformExMap extends Transformer {
             }
             types[propertyName] = typeFieldValue;
           }
+
+          if (allGroups[7] != null && allGroups[7].isNotEmpty) {
+            keyAndValue[propertyName] = allGroups[7];
+          }
         }
 
         /// Field declaration
@@ -120,8 +125,14 @@ class TransformExMap extends Transformer {
         String afterField = source.substring(property.endToken.offset);
 
         String getterSource = "get $propertyName => this['$propertyName'];";
-        String setterSource =
-            "  set $propertyName(value) => this['$propertyName'] = value";
+        String setterSource;
+        if (protectedKeys.contains(propertyName)) {
+          setterSource =
+              "  set $propertyName(value) => setProtectedField('$propertyName', value)";
+        } else {
+          setterSource =
+              "  set $propertyName(value) => this['$propertyName'] = value";
+        }
 
         String transformedSource =
             beforeField + getterSource + '\n' + setterSource + afterField;
@@ -161,12 +172,26 @@ class TransformExMap extends Transformer {
               stringBuffer.write("'$field': ${types[field]}, ");
             }
           }
-          stringBuffer
-            ..write('};')
-            ..write('\n')
-            ..write('  }')
-            ..write('\n')
-            ..write(afterclassDeclaration);
+
+          stringBuffer..write('};')..write('\n');
+
+          if (keyAndValue.isNotEmpty) {
+            for (String field in keyAndValue.keys) {
+              if (!protectedKeys.contains(field)) {
+                stringBuffer
+                  ..write("    this['$field'] = ${keyAndValue[field]};")
+                  ..write('\n');
+              }
+
+              if (protectedKeys.contains(field)) {
+                stringBuffer
+                  ..write("    this.$field = ${keyAndValue[field]};")
+                  ..write('\n');
+              }
+            }
+          }
+
+          stringBuffer..write('  }')..write('\n')..write(afterclassDeclaration);
 
           transformedSource = stringBuffer.toString();
         }

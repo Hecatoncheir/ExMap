@@ -71,13 +71,15 @@ class ExampleMap extends ExtendedMap {    ///    class ExampleMap extends Extend
   int id;                                 ///       ExampleMap() {
                                           ///         protectedKeys.addAll(['integerField']);
   @ExKey(protected: true, type: int)      ///         types = {'id': int, 'integerField': int, 'testField': String};
-  int integerField;                       ///       }
-                                          ///       
-  @ExKey(type: String)                    ///       get id => this['id'];
-  var testField;                          ///       set id(value) => this['id'] = value;
-}                                         ///
+  int integerField = 1;                   ///         this.integerField = 1;
+                                          ///         this['testField'] = 'test';
+  @ExKey(type: String)                    ///       }
+  var testField = 'test';                 ///       
+}                                         ///       get id => this['id'];
+                                          ///       set id(value) => this['id'] = value;
+                                          ///
                                           ///       get integerField => this['integerField'];
-                                          ///       set integerFieldd(value) => this['integerField'] = value;
+                                          ///       set integerFieldd(value) => setProtectedField('integerField', value);
                                           ///
                                           ///       get testField => this['testField'];
                                           ///       set testField(value) => this['testField'] = value;
@@ -87,4 +89,3 @@ class ExampleMap extends ExtendedMap {    ///    class ExampleMap extends Extend
 TODO:
   - Add more types support
   - Add named parameters for constructor
-  - Support to save annotated class properties values
