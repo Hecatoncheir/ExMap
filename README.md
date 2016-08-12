@@ -88,4 +88,3 @@ class ExampleMap extends ExtendedMap {    ///    class ExampleMap extends Extend
 
 TODO:
   - Add more types support
-  - Add named parameters for constructor
