@@ -87,4 +87,4 @@ class ExampleMap extends ExtendedMap {    ///    class ExampleMap extends Extend
 ```
 
 TODO:
-  - Add more types support
+  - Default constructor check in transformer

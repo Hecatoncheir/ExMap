@@ -20,15 +20,42 @@ class ExtendedMap<K, V> extends Object with MapMixin {
 
   /// Todo: camelCaseTSnakeCase or snakeCaseToCamel
   dynamic _checkType({String key, dynamic value, Map types}) {
+    if (types[key] == value.runtimeType || types[key] == null || value == null)
+      return value;
+
     if (types[key] == String) {
-      return value.toString();
+      if (value.runtimeType == int) {
+        return value.toString();
+      }
     }
 
-    if (types[key] == int && value != null) {
-      return int.parse(value.toString());
+    if (types[key] == int) {
+      if (value.runtimeType == String) {
+        return int.parse(value);
+      }
     }
 
-    return value;
+    if (types[key] == double) {
+      if (value.runtimeType == String) {
+        return double.parse(value);
+      }
+    }
+
+    if (types[key] == DateTime) {
+      if (value.runtimeType == String) {
+        return DateTime.parse(value);
+      }
+    }
+
+    if (types[key] == bool) {
+      if (value.runtimeType == String) {
+        if (value == 'true') return true;
+        if (value == 'false') return false;
+      }
+    }
+
+    throw new ArgumentError(
+        '$value is ${value.runtimeType} type, and this cannot be written to map. Use "this.types" to set right type for field.');
   }
 
   Map fromMap(Map map) {
