@@ -1,5 +1,5 @@
 # ExMap Change Log
 
-## 0.9.9
+## 0.9.8
 
 - Update readme
