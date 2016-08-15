@@ -1,8 +1,9 @@
-[![Build Status](https://codeship.com/projects/bbc87340-415a-0134-5cdb-527eefe58aba/status?branch=master
-)](https://codeship.com/projects/bbc87340-415a-0134-5cdb-527eefe58aba/status?branch=master
-)
 
-[![c9](http://wiki.teamliquid.net/commons/images/thumb/f/fd/Cloud9.png/48px-Cloud9.png) - Edit](https://ide.c9.io/rasart/ex_map)
+[![c9](http://wiki.teamliquid.net/commons/images/thumb/f/fd/Cloud9.png/48px-Cloud9.png) - editor](https://ide.c9.io/rasart/ex_map)
+
+[![Build Status](https://codeship.com/projects/bbc87340-415a-0134-5cdb-527eefe58aba/status?branch=master)](https://codeship.com/projects/bbc87340-415a-0134-5cdb-527eefe58aba/status?branch=master) 
+[![pub package](https://img.shields.io/pub/v/ex_map.svg?style=flat)](https://pub.dartlang.org/packages/ex_map)
+
 
 A library for writing pretty simple object class with Map interface.
 
