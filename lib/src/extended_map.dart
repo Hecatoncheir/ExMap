@@ -60,6 +60,7 @@ class ExtendedMap<K, V> extends Object with MapMixin {
 
   Map fromMap(Map map) {
     this.keys.forEach((String extendedKey) {
+    if (map[extendedKey] == null) return;
       _Map[extendedKey] =
           _checkType(key: extendedKey, value: map[extendedKey], types: types);
     });
