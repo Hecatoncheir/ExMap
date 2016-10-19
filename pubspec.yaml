@@ -1,5 +1,5 @@
 name: ex_map
-version: 0.10.5
+version: 0.10.6
 author: Vostrikov Vitaliy <rasart.pro@gmail.com>
 description: A library for writing pretty simple object class with Map interface.
 homepage: https://github.com/Rasarts/ExMap
