@@ -54,21 +54,19 @@ class ExtendedMap<K, V> extends Object with MapMixin {
       }
     }
 
-    if (types[key] == Map) {
-      if (value.runtimeType == Map) {
-        return new Map.from(value);
-      }
-    }
-
     throw new ArgumentError(
         '$value is ${value.runtimeType} type, and this cannot be written to map. Use "this.types" to set right type for field.');
   }
 
-  Map fromMap(Map map) {
+  Map fromMap(Map map, {bool withoutCheckTypes: false}) {
     this.keys.forEach((String extendedKey) {
       if (map[extendedKey] == null) return;
-      _Map[extendedKey] =
-          _checkType(key: extendedKey, value: map[extendedKey], types: types);
+      if (withoutCheckTypes) {
+        _Map[extendedKey] =
+            _checkType(key: extendedKey, value: map[extendedKey], types: types);
+      } else {
+        _Map[extendedKey] = map[extendedKey];
+      }
     });
 
     return this;
