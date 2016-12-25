@@ -9,6 +9,7 @@ class TestMap extends ExtendedMap {
   TestMap({id, integerField, testField}) {
     protectedKeys.addAll(['id']);
     types = {'testField': String, 'integerField': int};
+    this.withoutCheckTypes = false;
   }
 
   get id => this['id'];
@@ -32,6 +33,8 @@ class FieldsTestMap extends ExtendedMap {
       'boolField': bool,
       'testMapField': TestMap
     };
+
+    this.withoutCheckTypes = false;
   }
 
   get stringField => this['stringField'];

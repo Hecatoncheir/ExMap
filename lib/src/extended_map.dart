@@ -9,6 +9,7 @@ class ExtendedMap<K, V> extends Object with MapMixin {
   Map _types = new Map();
 
   Set get keys => _keys;
+  bool withoutCheckTypes = true;
 
   Map<String, Type> get types => _types;
   set types(Map typeMap) {
@@ -58,7 +59,9 @@ class ExtendedMap<K, V> extends Object with MapMixin {
         '$value is ${value.runtimeType} type, and this cannot be written to map. Use "this.types" to set right type for field.');
   }
 
-  Map fromMap(Map map, {bool withoutCheckTypes: false}) {
+  Map fromMap(Map map, {bool withoutCheckTypes}) {
+    if (withoutCheckTypes == null) withoutCheckTypes = this.withoutCheckTypes;
+
     this.keys.forEach((String extendedKey) {
       if (map[extendedKey] == null) return;
       if (withoutCheckTypes == false) {
@@ -88,7 +91,11 @@ class ExtendedMap<K, V> extends Object with MapMixin {
       throw new ArgumentError("$key can't be changed");
     }
 
-    _Map[key] = _checkType(key: key.toString(), value: value, types: types);
+    if (withoutCheckTypes == false) {
+      _Map[key] = _checkType(key: key.toString(), value: value, types: types);
+    } else {
+      _Map[key] = value;
+    }
   }
 
   remove(key) {
